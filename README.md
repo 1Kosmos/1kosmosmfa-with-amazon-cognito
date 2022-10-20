@@ -1,6 +1,6 @@
-# One K MFA integration with Amazon Cognito
+# One Kosmos MFA integration with Amazon Cognito
 
-This project is a demonestration of how to integrate One K Multi-Factor Authentication with Amazon Cognito user pools.
+This project is a demonestration of how to integrate One Kosmos Multi-Factor Authentication with Amazon Cognito user pools.
 
 # Requirements
 
@@ -11,30 +11,45 @@ This project is a demonestration of how to integrate One K Multi-Factor Authenti
   - ClourFormation
 - Nodejs and NPM
 
+You can find an example of IAM policy under `aws/awsPolicy.json`
+
 # Deployment steps
+
+###### Auth Flow Lambdas
+
+All the lambdas needs to be available in a S3 bucket before the next steps.
+
+This project already provide all the lambdas uploaded in a S3 bucket hosted in AWS Region: `us-east-1` so if you wanna to reuse these lambdas all the others services
+necessarily needs to be deployed in the same region `us-east-1`.
+
+In case you desire to have your services in a different aws region please upload the lambdas in your desired S3 bucket and then update the lambdas code uri in file `aws/UserPoolTemplate.yaml`
+
+```
+CodeUri: {S3_URI}
+```
 
 ###### Clone the project
 
 ```sh
-$ git clone https://github.com/aws-samples/duomfa-with-amazon-cognito.git
-$ cd duomfa-with-amazon-cognito
+$ git clone https://github.com/1Kosmos/1kosmosmfa-with-amazon-cognito.git
+$ cd 1kosmosmfa-with-amazon-cognito
 ```
 
 ###### Create AWS resources
 
-Create AWS resaources by running the CLI command below, replace ikey, skey and akey with the correct values from previous steps. **Note that creating these resources might incur cost in your account.**
+Create AWS resaources by running the CLI command below, replace 1KOSMOS_CLIENTE_ID, 1KOSMOS_TENANT_DNS, 1KOSMOS_COMMUNITY, and 1KOSMOS_SECRET_ID with the correct values from your 1kosmos account. **Note that creating these resources might incur cost in your account.**
 
 This command will create Cognito resources, lambda functions that will be used to drive custom authentication flow and it will also create a secret in secrets manager to store Kosmos keys
 
 ```sh
-$ aws cloudformation create-stack --stack-name kosmos-mfa-cognito --template-body file://aws/UserPoolTemplate.yaml --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameters ParameterKey=kosmosClienteId,ParameterValue={KOSMOS_CLIENTE_ID} ParameterKey=kosmosTenant,ParameterValue={KOSMOS_TENANT_DNS} ParameterKey=kosmosCommunity,ParameterValue={KOSMOS_COMMUNITY} ParameterKey=kosmosSecretId,ParameterValue={KOSMOS_SECRET_ID}
+$ aws cloudformation create-stack --stack-name one-kosmos-mfa-cognito --template-body file://aws/UserPoolTemplate.yaml --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameters ParameterKey=kosmosClienteId,ParameterValue={1KOSMOS_CLIENTE_ID} ParameterKey=kosmosTenant,ParameterValue={1KOSMOS_TENANT_DNS} ParameterKey=kosmosCommunity,ParameterValue={1KOSMOS_COMMUNITY} ParameterKey=kosmosSecretId,ParameterValue={1KOSMOS_SECRET_ID}
 
 ```
 
 Wait for the stack to be created successfully and then get the user-pool-id and app-client-id from outputs section. you can do this from CloudFromation console or using describe-stacks command
 
 ```sh
-$ aws cloudformation describe-stacks --stack-name kosmos-mfa-cognito
+$ aws cloudformation describe-stacks --stack-name one-kosmos-mfa-cognito
 ```
 
 ###### Update and run the application
@@ -55,13 +70,6 @@ $ npm install
 $ node server.js
 ```
 
-Here is a quick demo of deploying and running this project in a fresh Cloud9 environment. If you run this application in your local machine, you need to configure SSL and access the application with HTTPS.
-
-[![Watch the demo](https://duomfa-with-amazon-cognito.s3-us-west-2.amazonaws.com/Duo-MFA-with-cognito.gif)](https://duomfa-with-amazon-cognito.s3-us-west-2.amazonaws.com/Duo-MFA-with-cognito.mp4)
-
-[first steps]: https://duo.com/docs/duoweb#first-steps
-[generate akey]: https://duo.com/docs/duoweb#1.-generate-an-akey
-
 ## Notes about implementation
 
 ###### User registration
@@ -72,12 +80,11 @@ This call creates a user in Cognito, an automated email will be sent to verify e
 ###### User authentication
 
 Authentication starts by collecting username and password then making a call to `signIn()` method in /public/view-client.js
-`signIn()` starts a custom authentication flow with secure remote password (SRP). Cognito then responds with a custom challenge which is used to initialize and display Kosmos MFA iframe.
+`signIn()` starts a custom authentication flow with secure remote password (SRP). Cognito then responds with a custom challenge which is used to initialize and display 1Kosmos MFA iframe.
 
 Notice the call to `cognitoUser.authenticateUser(authenticationDetails, authCallBack);` the custom challenge will be sent to authCallBack function and this is where Kosmos SDK is initialized and used as below:
 
 ```javascript
-//render Duo MFA
 $("#mfa-div").html('<div id="mfa-iframe" class="iframe_container"></div>');
 const iframe = $("#mfa-iframe");
 BIDStepup.stepup(
@@ -92,7 +99,7 @@ BIDStepup.stepup(
 );
 ```
 
-This will render Kosmos iframe to the user with instructions to either setup their MFA preferences, if this is the first sign-in attempt, or initiate MFA according to saved settings.
+This will render One Kosmos iframe to the user with instructions to either setup their MFA preferences, if this is the first sign-in attempt, or initiate MFA according to saved settings.
 
 ###### Define Auth Challenge
 
@@ -115,7 +122,7 @@ Define auth challenge will go through the logic below to decide next challenge:
 
 This lambda function is triggered when the next step (returned from define auth challenge) is CUSTOM_CHALLENGE. For reference, the code of this lambda trigger is under aws/CreateAuthChallenge.js
 
-This function will load one kosmos variables and provide to front end be able to follow the step up flow.
+This function will load One Kosmos variables and provide these variables to the front end be able to follow the step up flow.
 
 ###### Verify Auth Challenge
 

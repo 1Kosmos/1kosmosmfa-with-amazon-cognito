@@ -9,7 +9,8 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^5.2.10",
     "express": "^4.18.1",
-    "hbs": "^4.2.0"
+    "hbs": "^4.2.0",
+    "js-helper-files": "github:1Kosmos/js-helper-files"
   },
   "engines": {
     "node": "8.x"

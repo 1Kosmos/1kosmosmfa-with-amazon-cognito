@@ -5,7 +5,6 @@
  * You may obtain a copy of this license at
  *    https://github.com/1Kosmos/1Kosmos_License/blob/main/LICENSE.txt
  */
-const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const express = require("express");
 const hbs = require("hbs");
 const app = express();
@@ -15,6 +14,10 @@ app.engine("html", hbs.__express);
 app.set("views", "./views");
 app.use(express.json());
 app.use(express.static("public"));
+app.use(
+  "/scripts",
+  express.static(__dirname + "/node_modules/js-helper-files/")
+);
 
 app.use((req, res, next) => {
   if (

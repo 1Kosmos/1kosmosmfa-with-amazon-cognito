@@ -105,8 +105,6 @@ authCallBack = {
     );
   },
   customChallenge: async function (challengeParameters) {
-    console.log("Custom Challenge from Cognito:");
-    console.log(challengeParameters);
     var username = $("#login-username").val();
 
     $("#mfa-div").html('<div id="mfa-iframe" class="iframe_container"></div>');

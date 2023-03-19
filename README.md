@@ -129,6 +129,53 @@ This function will load One Kosmos variables and provide these variables to the 
 This lambda will be triggered when challenge response is passed on from client to Cognito service, this is done throug the call `cognitoUser.sendCustomChallengeAnswer(data , authCallBack);`
 challenge response includes the autheticated code response generated from One Kosmos MFA, this response will be validated exchanging the code by the id_token from One Kosmos. For reference, the code of this lambda trigger is under aws/VerifyAuthChallenge.js
 
+## Implementation details
+Let’s walk through the end-to-end flow of integrating BlockID MFA with Amazon Cognito using a custom authentication flow. 
+Abovedemo project provides deployment steps and sample code to create a working demo in your environment.
+
+#### Create and configure a user pool
+The first step is to create the AWS resources needed for the demo. You can do that by deploying the AWS CloudFormation stack as described in the demo project.
+A few implementation details to be aware of:
+- The template creates an Amazon Cognito user pool, application client, and AWS Lambda triggers that are used for the custom authentication.
+- The template also accepts tenantDNS, communityName, oauth clientID and oauth clientSecret as inputs. 
+> For security, the parameters are masked in the AWS CloudFormation console. These parameters are stored in a secret in AWS Secrets Manager with a resource policy that allows relevant Lambda functions read access to that secret.
+- Above params are loaded from the secrets manager at the initialization of create OIDC request and during exchange of code grant for an `id_token`.
+
+Once the cloudformation is setup, you will need to get the user-pool-id and the app-client-id from the outputs and provide the same in the `public/view-client.js`
+
+## Authentication Flow
+
+<img src="https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgMUtvc21vcyBTdGV1cCB3LyBBbWF6b24gQ29nbml0bwpwYXJ0aWNpcGFudAAjCU1GQQALDVVzZXIAARByIGFnZW50ADMNAE0HXG51c2VyIHBvb2wAUg1EZWZpbmUgQXV0aFxuQ2hhbGxlbmdlADQOcmVhdAAFHlZlcmlmeQA1EQpVc2VyLT4AgRAKOiBzaWduLWluABUFAIEoBi0-AIEREjogSW5pdGlhdGUgYXV0aAoAgTMSLT4AgSQWOiBQcm9ncmVzcyBzbyBmYXIKAIFMFgBgFkNVU1RPTV9DSEFMTEVOR0UAZBUAgXoWOgCCIAhjAII8CQCCIxYAgVoWAIQLCE9JREMgcmVxdWVzdACBYhUAgkEMAIMmCgCCQwwAhCcLOiBEaXNwbGF5AIRqCWlmcmFtZSBmb3Igc3RlcC11cAoAhFcLAIMmBjogdgCDSgZ1c2VyAIM9BwBIDWFuc3dlADgJAIFnCwA6EQCDbwhpbnZva2UgY2FsbGJhY2sgYW5kIGNvZGUtZ3JhbnQAg20hcmVzcG9uc2VUb0F1dGgAhR4JXG4AhkIIAEELAIQYFACFChY6IGV4Y2hhbmdlAIEHBSB3aXRoIGlkX3Rva2VuCgCFPhYAgQIeIG9rAIRXVQCGNgxUb2tlbnMgb3IgbmV4dACEZAsK&s=default"/>
+
+- In your application, the user is presented with a sign-in UI that performs the first factor authentication with username / password against Cognito user-pool
+
+- After the first factor, the define <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-define-auth-challenge.html">auth challenge</a> Lambda trigger will return CUSTOM_CHALLENGE and this will move control to the <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-create-auth-challenge.html">create auth challenge</a> trigger.
+
+- The create auth challenge Lambda trigger creates a BlockID OIDC request params using tenantId, communityName, clientId. This is also where you can specify ACR claims to configure what kind of step up options should be available to a user. Here is a sample code of what create auth challenge should look like https://github.com/1Kosmos/1kosmosmfa-with-amazon-cognito/blob/main/aws/CreateAuthChallenge.js
+
+- The client initializes the BlockID Web library with the OIDC and displays BlockID MFA in an iframe to request a second factor from the user. To initialize the BlockID library, tenantId, communityName, OIDC clientId, acr claim, username and a callback function to invoke after MFA step is completed by the user. This is done on the client side as follows:
+```
+BIDStepup.stepup(
+      iframe,
+      challengeParameters.tenant,
+      challengeParameters.community,
+      challengeParameters.kosmos_clientId,
+      username,
+      challengeParameters.state,
+      challengeParameters.acr,
+      mfa_callback
+    );
+```
+- Through the BlockID iframe, the user can select their MFA preferences and respond to an MFA challenge. After successful MFA setup, an OIDC code-grant response from the web SDK will be returned to the client and passed to the `mfa_callback` function that was provided in `BIDStepup.stepup` call
+
+- The client sends the BlockID code-grant response to the Amazon Cognito service as a challenge response.
+
+- Amazon Cognito sends the response to the verify auth challenge Lambda trigger, which uses BlockID OIDC clientId and secret to verify the response.
+
+- Validation results and current state are passed once again to the define auth challenge Lambda trigger. If the user response is valid, then the BlockID MFA challenge is successful. You can then decide to introduce additional challenges to the user or issue tokens and complete the authentication process.
+
+
+
 ## Try it out
 To try this ahead of any production integration you can test functionality with 1Kosmos Developer Portal.
 - Register for developer account: https://developer.1kosmos.com/devportal/register

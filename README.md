@@ -128,3 +128,26 @@ This function will load One Kosmos variables and provide these variables to the 
 
 This lambda will be triggered when challenge response is passed on from client to Cognito service, this is done throug the call `cognitoUser.sendCustomChallengeAnswer(data , authCallBack);`
 challenge response includes the autheticated code response generated from One Kosmos MFA, this response will be validated exchanging the code by the id_token from One Kosmos. For reference, the code of this lambda trigger is under aws/VerifyAuthChallenge.js
+
+## Try it out
+To try this ahead of any production integration you can test functionality with 1Kosmos Developer Portal.
+- Register for developer account: https://developer.1kosmos.com/devportal/register
+
+- We have pre-setup a ready to use OIDC Service Provider you can use for this trial
+```
+DNS: blockid-trial.1kosmos.net
+Community Name: devx
+Client ID: af29b87614ba0e1e8952b4cc1bf72f95
+Secret: d741894404f769117b551d61df7b77f60062a5041ba961c577936960242b4a80
+```
+- Follow steps to setup your Amazon Cognito Authentication workflow
+
+> When you register Amazon Cognito user, please remember to use the same email address registered above on 1Kosmos Dev Portal
+> You can request a dedicated trial in which you will be able to link your Amazon Cognito User Pool with BlockID platform (<i>more information below</i>)
+
+BlockID Step-up will be integrated into the sign-in flow as a custom challenge. 
+To do that, you need to generate an OIDC request (using the above SDK) and load BlockID MFA UI in an iframe. When the challenge is answered by the user, a code grant is returned to your web application and can be sent to Amazon Cognito for verification. 
+If the response is valid then the MFA challenge is successful.
+
+
+

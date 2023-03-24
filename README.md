@@ -184,4 +184,4 @@ If the response is valid then the MFA challenge is successful.
 
 
 ## Contact Us
-You can write to sales@1kosmos.com or conatct via our https://www.1kosmos.com/free-trial/
+You can write to sales@1kosmos.com or via https://www.1kosmos.com/free-trial/

@@ -175,7 +175,7 @@ Secret: d741894404f769117b551d61df7b77f60062a5041ba961c577936960242b4a80
 ```
 - Follow steps to setup your Amazon Cognito Authentication workflow
 
-> When you register Amazon Cognito user, please remember to use the same email address registered above on 1Kosmos Dev Portal
+> For purpose of above trial site, you may have to use same user email on both cognito as well a 1Kosmos Dev Portal.
 > You can request a dedicated trial in which you will be able to link your Amazon Cognito User Pool with BlockID platform (<i>more information below</i>)
 
 BlockID Step-up will be integrated into the sign-in flow as a custom challenge. 
@@ -183,4 +183,5 @@ To do that, you need to generate an OIDC request (using the above SDK) and load 
 If the response is valid then the MFA challenge is successful.
 
 
-
+## Contact Us
+You can write to sales@1kosmos.com or conatct via our https://www.1kosmos.com/free-trial/

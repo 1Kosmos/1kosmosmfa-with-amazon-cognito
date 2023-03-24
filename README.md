@@ -129,20 +129,6 @@ This function will load One Kosmos variables and provide these variables to the 
 This lambda will be triggered when challenge response is passed on from client to Cognito service, this is done throug the call `cognitoUser.sendCustomChallengeAnswer(data , authCallBack);`
 challenge response includes the autheticated code response generated from One Kosmos MFA, this response will be validated exchanging the code by the id_token from One Kosmos. For reference, the code of this lambda trigger is under aws/VerifyAuthChallenge.js
 
-## Implementation details
-Let’s walk through the end-to-end flow of integrating BlockID MFA with Amazon Cognito using a custom authentication flow. 
-Abovedemo project provides deployment steps and sample code to create a working demo in your environment.
-
-#### Create and configure a user pool
-The first step is to create the AWS resources needed for the demo. You can do that by deploying the AWS CloudFormation stack as described in the demo project.
-A few implementation details to be aware of:
-- The template creates an Amazon Cognito user pool, application client, and AWS Lambda triggers that are used for the custom authentication.
-- The template also accepts tenantDNS, communityName, oauth clientID and oauth clientSecret as inputs. 
-> For security, the parameters are masked in the AWS CloudFormation console. These parameters are stored in a secret in AWS Secrets Manager with a resource policy that allows relevant Lambda functions read access to that secret.
-- Above params are loaded from the secrets manager at the initialization of create OIDC request and during exchange of code grant for an `id_token`.
-
-Once the cloudformation is setup, you will need to get the user-pool-id and the app-client-id from the outputs and provide the same in the `public/view-client.js`
-
 ## Authentication Flow
 
 <img src="https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgMUtvc21vcyBTdGV1cCB3LyBBbWF6b24gQ29nbml0bwpwYXJ0aWNpcGFudAAjCU1GQQALDVVzZXIAARByIGFnZW50ADMNAE0HXG51c2VyIHBvb2wAUg1EZWZpbmUgQXV0aFxuQ2hhbGxlbmdlADQOcmVhdAAFHlZlcmlmeQA1EQpVc2VyLT4AgRAKOiBzaWduLWluABUFAIEoBi0-AIEREjogSW5pdGlhdGUgYXV0aAoAgTMSLT4AgSQWOiBQcm9ncmVzcyBzbyBmYXIKAIFMFgBgFkNVU1RPTV9DSEFMTEVOR0UAZBUAgXoWOgCCIAhjAII8CQCCIxYAgVoWAIQLCE9JREMgcmVxdWVzdACBYhUAgkEMAIMmCgCCQwwAhCcLOiBEaXNwbGF5AIRqCWlmcmFtZSBmb3Igc3RlcC11cAoAhFcLAIMmBjogdgCDSgZ1c2VyAIM9BwBIDWFuc3dlADgJAIFnCwA6EQCDbwhpbnZva2UgY2FsbGJhY2sgYW5kIGNvZGUtZ3JhbnQAg20hcmVzcG9uc2VUb0F1dGgAhR4JXG4AhkIIAEELAIQYFACFChY6IGV4Y2hhbmdlAIEHBSB3aXRoIGlkX3Rva2VuCgCFPhYAgQIeIG9rAIRXVQCGNgxUb2tlbnMgb3IgbmV4dACEZAsK&s=default"/>

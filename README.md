@@ -176,7 +176,7 @@ Secret: d741894404f769117b551d61df7b77f60062a5041ba961c577936960242b4a80
 - Follow steps to setup your Amazon Cognito Authentication workflow
 
 > For purpose of above trial site, you may have to use same user email on both cognito as well a 1Kosmos Dev Portal.
-> You can request a dedicated trial in which you will be able to link your Amazon Cognito User Pool with BlockID platform (<i>more information below</i>)
+> You can request a dedicated trial in which you will be able to link your Amazon Cognito User Pool with BlockID platform.
 
 BlockID Step-up will be integrated into the sign-in flow as a custom challenge. 
 To do that, you need to generate an OIDC request (using the above SDK) and load BlockID MFA UI in an iframe. When the challenge is answered by the user, a code grant is returned to your web application and can be sent to Amazon Cognito for verification. 

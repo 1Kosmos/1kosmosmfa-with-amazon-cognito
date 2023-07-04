@@ -12,8 +12,8 @@ exports.handler = async (event) => {
     tenant: "", //ONEK_TENANT,
     community: "", //ONEK_COMMUNITY,
     kosmos_clientId: "", //ONEK_OIDC_CLIENTID,
-    acr: "", //ONEK_ACR,
-    state: "", //ONEK_STATE,
+    acr: "'liveID push','otp sms','otp email','otp'", //ONEK_ACR,
+    state: "state123", //ONEK_STATE,
   };
 
   console.log(event);

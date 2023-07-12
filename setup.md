@@ -6,7 +6,7 @@
 
 You can find an example of IAM policy under aws/awsPolicy.json
 
-Other Variables needed:
+Other Variables needed (Need to create OAuth Application in BlockID tenant):
 
 - 1KOSMOS_CLIENTE_ID // OAuth Client ID
 - 1KOSMOS_TENANT_DNS // Tenant DNS

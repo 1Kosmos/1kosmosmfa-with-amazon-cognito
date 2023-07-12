@@ -8,11 +8,11 @@
 const fetch = require("node-fetch");
 const aws = require("aws-sdk");
 
-let tenantDNS = process.env.ONEK_TENANT,
-  communityName = process.env.ONEK_COMMUNITY,
-  clientId = process.env.ONEK_CLIENTID,
-  secretName = process.env.ONEK_SECRET_NAME,
-  secretId;
+let tenantDNS = ""; //ONEK_TENANT,
+communityName = ""; //ONEK_COMMUNITY,
+clientId = ""; //ONEK_OIDC_CLIENTID,
+secretName = "";
+secretId = ""; //ONEK_OIDC_SECRET,;
 
 let smClient = new aws.SecretsManager({});
 
@@ -33,24 +33,24 @@ exports.handler = async (event) => {
 
     console.log(challenge);
 
-    const promise = new Promise((resolve, reject) => {
-      smClient.getSecretValue({ SecretId: secretName }, function (err, data) {
-        if (err) {
-          console.error(err);
-          return reject(err);
-        }
+    // const promise = new Promise((resolve, reject) => {
+    //   smClient.getSecretValue({ SecretId: secretName }, function (err, data) {
+    //     if (err) {
+    //       console.error(err);
+    //       return reject(err);
+    //     }
 
-        console.log(data);
+    //     console.log(data);
 
-        if ("SecretString" in data) {
-          secretId = data.SecretString;
-        }
+    //     if ("SecretString" in data) {
+    //       secretId = data.SecretString;
+    //     }
 
-        resolve();
-      });
-    });
+    //     resolve();
+    //   });
+    // });
 
-    await promise;
+    // await promise;
 
     const basicAuth = Buffer.from(`${clientId}:${secretId}`).toString("base64");
     const myHeaders = {

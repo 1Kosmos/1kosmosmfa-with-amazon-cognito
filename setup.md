@@ -1,17 +1,17 @@
 **AWS account with the follows service permissions:**
 
--Lambda
--Cognito-Idp
--Nodejs and NPM
+- Lambda
+- Cognito-Idp
+- Nodejs and NPM
 
 You can find an example of IAM policy under aws/awsPolicy.json
 
 Other Variables needed:
 
--1KOSMOS_CLIENTE_ID // OAuth Client ID
--1KOSMOS_TENANT_DNS // Tenant DNS
--1KOSMOS_COMMUNITY // Community Name
--1KOSMOS_SECRET_ID // OAuth Client Secret Id
+- 1KOSMOS_CLIENTE_ID // OAuth Client ID
+- 1KOSMOS_TENANT_DNS // Tenant DNS
+- 1KOSMOS_COMMUNITY // Community Name
+- 1KOSMOS_SECRET_ID // OAuth Client Secret Id
 
 ## Solution Steps 
 

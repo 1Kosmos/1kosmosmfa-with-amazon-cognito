@@ -9,9 +9,9 @@ exports.handler = async (event) => {
   console.log(event);
 
   event.response.publicChallengeParameters = {
-    tenant: "", //ONEK_TENANT,
-    community: "", //ONEK_COMMUNITY,
-    kosmos_clientId: "", //ONEK_OIDC_CLIENTID,
+    tenant: "1k-dev.1kosmos.net", //ONEK_TENANT,
+    community: "default", //ONEK_COMMUNITY,
+    kosmos_clientId: "e27ec68e0f5e6685f2775f643853d933", //ONEK_OIDC_CLIENTID,
     acr: "'liveID push','otp sms','otp email','otp'", //ONEK_ACR,
     state: "state123", //ONEK_STATE,
   };

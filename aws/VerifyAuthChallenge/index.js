@@ -8,11 +8,11 @@
 const fetch = require("node-fetch");
 const aws = require("aws-sdk");
 
-let tenantDNS = ""; //ONEK_TENANT,
-communityName = ""; //ONEK_COMMUNITY,
-clientId = ""; //ONEK_OIDC_CLIENTID,
-secretName = "";
-secretId = ""; //ONEK_OIDC_SECRET,;
+let tenantDNS = "1k-dev.1kosmos.net"; //ONEK_TENANT,
+let communityName = "default"; //ONEK_COMMUNITY,
+let clientId = "e27ec68e0f5e6685f2775f643853d933"; //ONEK_OIDC_CLIENTID,
+let secretName = "";
+let secretId = "0cd2d076d3daa84c17627ea9136d1016f2eabe39feb98a0deb4d4e133f05853c"; //ONEK_OIDC_SECRET,;
 
 let smClient = new aws.SecretsManager({});
 
@@ -92,3 +92,4 @@ exports.handler = async (event) => {
     return event;
   }
 };
+
